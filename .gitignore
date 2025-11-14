@@ -1,0 +1,11 @@
+__pycache__/
+*.pyc
+*.pyd
+*.so
+.env
+.venvIfood/
+.tox/
+.idea/
+.vscode/
+/build/
+/dist/
