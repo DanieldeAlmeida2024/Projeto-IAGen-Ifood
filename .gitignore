@@ -3,7 +3,7 @@ __pycache__/
 *.pyd
 *.so
 .env
-.venvIfood/
+.venv/
 .tox/
 .idea/
 .vscode/
