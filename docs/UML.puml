@@ -1,0 +1,11 @@
+@startuml
+actor Operador
+component "CLI de recomendacao" as CLI
+component "Leitor CSV" as Leitor
+component "Regras de ranking" as Ranking
+database "Dados simulados" as CSV
+Operador --> CLI
+CLI --> Leitor
+Leitor --> CSV
+CLI --> Ranking
+@enduml
