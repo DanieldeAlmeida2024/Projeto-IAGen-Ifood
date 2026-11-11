@@ -11,3 +11,6 @@ Estes diagramas distinguem baseline funcional e SVD experimental:
 Não confundir pipeline SVD desenhado com treinamento validado. Atualizar ao corrigir o `MFModel` e adicionar testes de treino e predição.
 
 - [Pipeline CSR → Surprise/SVD → predição/cold start](04_pipeline_svd.puml) — fonte PlantUML adicional da revisão 1.1.0 proposta, não demonstra qualidade de recomendação.
+
+
+- [Avaliação leave-one-out com baseline × SVD](05_avaliacao_offline.puml) — 1.2.0 proposta, pipeline sintético sem demonstração de ganho.

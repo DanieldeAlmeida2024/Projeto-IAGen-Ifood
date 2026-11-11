@@ -47,3 +47,26 @@ Definir objetivo mensurável (CTR, conversão, diversidade), conjuntos treino/va
 
 
 **Resultado comprovado da proposta 1.1.0:** [CI #43110171433](https://github.com/DanieldeAlmeida2024/Projeto-IAGen-Ifood/actions/runs/43110171433) aprovou 5 testes do baseline e 7 do SVD com Python 3.11/Surprise 1.1.4. O SVD foi exercitado em dataset sintético, mas **nenhuma métrica comparativa de recomendação foi calculada**; a expressão "modelo validado" refere-se apenas à execução técnica dos contratos de software.
+
+
+## 1.2.0 proposta — comparação offline sem vazamento
+
+O novo módulo `src/evaluation.py` compara SVD e popularidade sobre **exatamente o mesmo treino** e mesmo conjunto de candidatos não consumidos, com `leave_one_out` por usuário elegível e seed 42. Ao retirar um item, preserva pelo menos uma interação do usuário no treinamento e ao menos uma ocorrência global do item, evitando casos impossíveis na avaliação de ranking. Nenhum dado real de cliente é processado.
+
+A métrica `hit_rate@5` identifica quantos usuários têm seu único item retido no Top 5. `catalog_coverage@5` é a fração dos itens de catálogo que aparece em ao menos uma lista de recomendação. Ambas são registradas para baseline e SVD; **não há meta de vitória artificial do SVD**, e o CI falha apenas se invariantes/contratos falharem. Este CSV não contém timestamps confiáveis: holdout aleatório reprodutível **não demonstra generalização temporal**, avaliação online ou ausência de outros vieses. Ponderação por número de pedidos e disponibilidade do produto também não é considerada.
+
+**Comando:** `python -m src.evaluation --k 5 --seed 42` gera JSON; CI preserva o resumo como artefato. Não há treinamento de IA generativa. [Rastreabilidade](../testes/PLANO_DE_TESTES.md) · [UML](../uml/05_avaliacao_offline.puml).
+
+## Evidência de avaliação offline — 11/11/2026
+
+**Fonte reproduzível:** [GitHub Actions #43113533934](https://github.com/DanieldeAlmeida2024/Projeto-IAGen-Ifood/actions/runs/43113533934), commit `8c42c0e78948dfa37594bea499d773debd11a52d`, artefato `offline-ranking-evaluation/evaluation-summary.json`. O CI registrou **5 testes de baseline, 7 testes SVD e 5 testes da avaliação — 17 testes aprovados**.
+
+| Medida | Popularidade | SVD | Leitura |
+|---|---:|---:|---|
+| Hit Rate@5 | **0.15 (15%)** | 0.12 (12%) | Popularidade teve maior taxa de acerto no conjunto sintético; diferença de 3 p.p., sem inferência estatística |
+| Cobertura de catálogo@5 | 0.220779 (22,1%) | **0.415584 (41,6%)** | SVD recomendou maior proporção de itens distintos |
+| Usuários / holdouts | 100 | 100 | Mesmo conjunto de avaliação, um par por usuário |
+| Itens no catálogo treinado | 77 | 77 | Mesmos candidatos por usuário |
+| Interações de treino | 1689 | 1689 | Mesmo treino, com seed 42 |
+
+**Decisão técnica:** não adotar o SVD como substituto da popularidade somente por esta avaliação. Os dados são inteiramente simulados, sem tempo de pedidos e sem teste online; esses resultados não demonstram conversão, precisão em ambiente real nem diferenças estatisticamente significativas. Os próximos experimentos devem comparar métricas em mais seeds, intervalos de confiança e, caso haja dados adequados e autorizados, partição temporal.
