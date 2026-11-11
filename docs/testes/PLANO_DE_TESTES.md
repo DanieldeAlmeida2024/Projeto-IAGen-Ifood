@@ -85,3 +85,16 @@ Documentar versão de dependências, tamanho do conjunto, seed, commit, duraçã
 | Interações de treino | 1689 | 1689 | Mesmo treino, com seed 42 |
 
 **Decisão técnica:** não adotar o SVD como substituto da popularidade somente por esta avaliação. Os dados são inteiramente simulados, sem tempo de pedidos e sem teste online; esses resultados não demonstram conversão, precisão em ambiente real nem diferenças estatisticamente significativas. Os próximos experimentos devem comparar métricas em mais seeds, intervalos de confiança e, caso haja dados adequados e autorizados, partição temporal.
+
+
+## REC-21 — variabilidade entre seeds (1.3.0 proposta)
+
+| Verificação | Critério | Evidência prevista |
+|---|---|---|
+| CLI seeds 42–46 | Um relatório por seed, mesmo split entre modelos na seed | `evaluation-robustness.json` |
+| Repetibilidade | Mesma lista de seeds, mesma amostra → JSON igual | Unitário `test_evaluation_multi_seed.py` |
+| Resumo | Média, std amostral, mínimo e máximo em métricas de ambos | Teste numérico e validação JSON |
+| Comparação de métodos | `delta = SVD - popularidade` calculado por seed, não apenas em médias arredondadas | Teste e revisão do JSON |
+| Dados degenerados | Seeds duplicadas, não numéricas, sem 2 replicações | `ValueError`, não produzir relato incorreto |
+
+Essas verificações **não** substituem REC-16 (governança dos dados) ou teste em pedidos reais/partição temporal. Não publicar a hipótese de ganho antes de ler o relatório.

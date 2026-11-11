@@ -58,3 +58,11 @@ O resultado JSON compara **hit rate@5** e **cobertura de catálogo@5** contra o 
 ### Resultado atual da comparação (dataset sintético)
 
 [CI #43113533934](https://github.com/DanieldeAlmeida2024/Projeto-IAGen-Ifood/actions/runs/43113533934) aprovou **17 testes** e produziu métricas com seed 42: **Hit Rate@5 de 15% para popularidade e 12% para SVD**, com cobertura de **22,1%** e **41,6%**, respectivamente. O SVD apresentou maior variedade, **não maior taxa de acerto**. Esses números não são resultados reais de pedidos nem provam significância estatística.
+
+
+## Sensibilidade por seeds (1.3.0 proposta)
+```bash
+python -m src.evaluation_multi_seed --k 5 --seeds 42,43,44,45,46
+python -m unittest discover -s tests -p 'test_evaluation_multi_seed.py' -v
+```
+Os resultados incluem a diferença `SVD - popularidade`, média, std, mínimo e máximo. **Não** são estimativas de eficácia real nem intervalos de confiança; nenhum serviço iFood é chamado.

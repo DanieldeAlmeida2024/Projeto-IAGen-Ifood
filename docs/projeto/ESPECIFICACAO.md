@@ -70,3 +70,10 @@ A métrica `hit_rate@5` identifica quantos usuários têm seu único item retido
 | Interações de treino | 1689 | 1689 | Mesmo treino, com seed 42 |
 
 **Decisão técnica:** não adotar o SVD como substituto da popularidade somente por esta avaliação. Os dados são inteiramente simulados, sem tempo de pedidos e sem teste online; esses resultados não demonstram conversão, precisão em ambiente real nem diferenças estatisticamente significativas. Os próximos experimentos devem comparar métricas em mais seeds, intervalos de confiança e, caso haja dados adequados e autorizados, partição temporal.
+
+
+## Experimento multisseed — contrato 1.3.0 proposto
+
+A análise compara ambas as estratégias em **cada uma** das seeds 42, 43, 44, 45 e 46 com o mesmo split para os modelos naquela rodada. `src/evaluation_multi_seed.py` reutiliza `evaluate_ranking` e fornece métricas individuais, média, desvio-padrão amostral, mínimo e máximo para HitRate@K, cobertura@K e diferença `SVD - popularidade`, sem esconder resultados desfavoráveis. A CLI rejeita lista vazia, seeds duplicadas ou menos de duas seeds.
+
+**Validação:** o CI produz `evaluation-robustness.json` no job SVD, separado do artefato de seed única. Reportar também a faixa de usuários elegíveis por seed para impedir comparações equivocadas de denominadores. Esta análise ainda usa os mesmos pedidos **simulados e sem timestamp**, de modo que não fornece significância estatística nem teste temporal/online.

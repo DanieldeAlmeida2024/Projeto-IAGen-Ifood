@@ -35,6 +35,7 @@ jobs:
         run: |
           python -m unittest discover -s tests -p 'test_mf_model.py' -v
           python -m unittest discover -s tests -p 'test_evaluation.py' -v
+          python -m unittest discover -s tests -p 'test_evaluation_multi_seed.py' -v
       - name: Avaliação offline reproduzível (sem afirmar melhoria)
         run: |
           python -m src.evaluation --k 5 --seed 42 | tee evaluation-summary.json
@@ -44,4 +45,15 @@ jobs:
         with:
           name: offline-ranking-evaluation
           path: evaluation-summary.json
+          retention-days: 14
+
+      - name: Reprodutibilidade e sensibilidade multi-seed sem dados reais
+        run: |
+          python -m src.evaluation_multi_seed --k 5 --seeds 42,43,44,45,46 | tee evaluation-robustness.json
+          python -m json.tool evaluation-robustness.json > /dev/null
+      - name: Publicar análise descritiva de seeds
+        uses: actions/upload-artifact@v4
+        with:
+          name: offline-ranking-multi-seed
+          path: evaluation-robustness.json
           retention-days: 14

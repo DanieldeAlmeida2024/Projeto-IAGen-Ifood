@@ -1,0 +1,24 @@
+@startuml
+title IAGen Ifood — comparação multisseed de ranking sintético
+actor "CI Python 3.11" as CI
+database "CSV simulado positivo" as CSV
+participant "compare_seeds()" as Compare
+participant "evaluate_ranking(seed)" as Eval
+participant "SVD & popularidade" as Models
+collections "evaluation-robustness.json" as Json
+CI -> CSV : loader e agregação
+CSV -> Compare : DataFrame
+loop seed 42..46
+ Compare -> Eval : leave-one-out(seed)
+ Eval -> Models : mesmo treino/candidatos para ambos
+ Models --> Compare : HitRate@5 e catalog_coverage@5
+end
+Compare -> Compare : média, desvio amostral, min/max,
+SVD - popularidade por seed
+Compare -> Json : per_seed e descriptive_summary
+CI -> Json : upload artifact
+note bottom
+5 seeds no mesmo dataset sintético: amostras dependentes.
+Não é intervalo de confiança nem validação temporal.
+end note
+@enduml

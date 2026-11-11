@@ -51,3 +51,13 @@
 | Interações de treino | 1689 | 1689 | Mesmo treino, com seed 42 |
 
 **Decisão técnica:** não adotar o SVD como substituto da popularidade somente por esta avaliação. Os dados são inteiramente simulados, sem tempo de pedidos e sem teste online; esses resultados não demonstram conversão, precisão em ambiente real nem diferenças estatisticamente significativas. Os próximos experimentos devem comparar métricas em mais seeds, intervalos de confiança e, caso haja dados adequados e autorizados, partição temporal.
+
+
+## Versão 1.3.0 proposta — estabilidade por seed (11/11/2026)
+
+| Marco | Commit e contexto | Resultado |
+|---|---|---|
+| **1.2.0 integrada** | [PR #4](https://github.com/DanieldeAlmeida2024/Projeto-IAGen-Ifood/pull/4), squash `78f0ef5eda3683cca618be5efb005fcc898ce5d5` | Relatório com seed 42, HitRate@5 0,15 popularidade vs 0,12 SVD; métricas do CSV sintético |
+| **1.3.0 proposta** | `feat/multi-seed-ranking-robustness-20261111` | Relatório JSON de **5 seeds (42–46)**, média/desvio-padrão/faixa de HitRate@5 e cobertura; teste da comparação, CI pendente |
+
+**Interpretação:** repetições com sementes diferentes no mesmo dataset sintético ajudam a identificar instabilidade de ranking. Não são experimentos independentes nem intervalos de confiança estatística; não autorizam concluir superioridade, causalidade ou generalização.
