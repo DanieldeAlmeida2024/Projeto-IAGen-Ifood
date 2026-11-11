@@ -125,3 +125,11 @@ Nova branch: `feat/temporal-data-validation-20261111`, que **não inventa timest
 **Gates:** `tests/test_temporal_validation.py` e CLI `python -m src.temporal_validation --arquivo ... --cutoff ...` no CI com relatório `synthetic-temporal-validation`; execução real pendente no primeiro commit. O próximo passo será avaliação de ranking pós-cutoff apenas sobre dados cronológicos autorizados. Retenção, pseudonimização e LGPD devem ser definidos antes de importar qualquer registro pessoal.
 
 **REC-22**: rejeitar data sem timezone, arquivo legado sem `occurred_at`, IDs/contagens inválidos e split vazio; provar fronteira temporal e classificação de cold-start. Não marcar como testado antes do CI.
+
+
+### Evidência de execução da revisão 1.4.0
+- [CI #43119222792](https://github.com/DanieldeAlmeida2024/Projeto-IAGen-Ifood/actions/runs/43119222792): **23 testes PASS** (baseline 5, SVD 7, avaliação única 5, multisseed 5, temporal 6).
+- Relatório `synthetic-temporal-validation`: 5 linhas pré-cutoff, 5 pós-cutoff, 2 elegíveis ao ranking, 1 cold-start de usuário, 1 cold-start de item e 1 item já consumido. Todos os dados são fictícios.
+- Esse resultado valida separação temporal do exemplo, **não** avalia HitRate temporal do SVD, e não permite inferir desempenho sobre pedidos reais.
+
+O SHA do commit documental posterior deve voltar a passar no CI antes do merge.
