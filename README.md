@@ -25,3 +25,10 @@ O CSV original é `src/data/ifood_sim_data.csv`. Para outro arquivo, use `--arqu
 
 ## Limitações
 O modelo SVD original precisa corrigir importações, treinar e avaliar com ambiente de bibliotecas compatível; não foi testado ou publicado como API neste PR. A CLI de popularidade é um baseline simples e reproduzível.
+
+## Documentação técnica versionada
+
+- [Especificação: popularidade × SVD](docs/projeto/ESPECIFICACAO.md)
+- [UML dos algoritmos e dados](docs/uml/README.md)
+- [Plano de testes e validação](docs/testes/PLANO_DE_TESTES.md)
+- [Histórico de versões](docs/controle/VERSIONAMENTO.md)
