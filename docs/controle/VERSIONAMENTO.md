@@ -89,8 +89,13 @@ Nova branch: `feat/temporal-data-validation-20261111`, que **não inventa timest
 
 
 ### Evidência de execução da revisão 1.4.0
-- [CI #43119222792](https://github.com/DanieldeAlmeida2024/Projeto-IAGen-Ifood/actions/runs/43119222792): **23 testes PASS** (baseline 5, SVD 7, avaliação única 5, multisseed 5, temporal 6).
+- [CI #43119222792](https://github.com/DanieldeAlmeida2024/Projeto-IAGen-Ifood/actions/runs/43119222792): **28 testes PASS** (baseline 5, SVD 7, avaliação única 5, multisseed 5, temporal 6).
 - Relatório `synthetic-temporal-validation`: 5 linhas pré-cutoff, 5 pós-cutoff, 2 elegíveis ao ranking, 1 cold-start de usuário, 1 cold-start de item e 1 item já consumido. Todos os dados são fictícios.
 - Esse resultado valida separação temporal do exemplo, **não** avalia HitRate temporal do SVD, e não permite inferir desempenho sobre pedidos reais.
 
 O SHA do commit documental posterior deve voltar a passar no CI antes do merge.
+
+
+### Errata de contagem — 11/11/2026
+
+A referência inicial a 23 testes no [CI #43119222792](https://github.com/DanieldeAlmeida2024/Projeto-IAGen-Ifood/actions/runs/43119222792) era um **erro aritmético de documentação**. O total correto é **28 testes**: 5 baseline + 7 SVD + 5 avaliação seed única + 5 multisseed + 6 temporais. Todos os cinco grupos tiveram execução `OK` no log. Não houve mudança nas regras do modelo, dados de teste nem resultados; a errata não implica execução de novos testes. O CI na main do merge #6 também foi concluído com sucesso no [run #43120014628](https://github.com/DanieldeAlmeida2024/Projeto-IAGen-Ifood/actions/runs/43120014628).
