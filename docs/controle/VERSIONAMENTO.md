@@ -51,3 +51,27 @@
 | Interações de treino | 1689 | 1689 | Mesmo treino, com seed 42 |
 
 **Decisão técnica:** não adotar o SVD como substituto da popularidade somente por esta avaliação. Os dados são inteiramente simulados, sem tempo de pedidos e sem teste online; esses resultados não demonstram conversão, precisão em ambiente real nem diferenças estatisticamente significativas. Os próximos experimentos devem comparar métricas em mais seeds, intervalos de confiança e, caso haja dados adequados e autorizados, partição temporal.
+
+
+## Versão 1.3.0 proposta — estabilidade por seed (11/11/2026)
+
+| Marco | Commit e contexto | Resultado |
+|---|---|---|
+| **1.2.0 integrada** | [PR #4](https://github.com/DanieldeAlmeida2024/Projeto-IAGen-Ifood/pull/4), squash `78f0ef5eda3683cca618be5efb005fcc898ce5d5` | Relatório com seed 42, HitRate@5 0,15 popularidade vs 0,12 SVD; métricas do CSV sintético |
+| **1.3.0 proposta** | `feat/multi-seed-ranking-robustness-20261111` | Relatório JSON de **5 seeds (42–46)**, média/desvio-padrão/faixa de HitRate@5 e cobertura; teste da comparação, CI pendente |
+
+**Interpretação:** repetições com sementes diferentes no mesmo dataset sintético ajudam a identificar instabilidade de ranking. Não são experimentos independentes nem intervalos de confiança estatística; não autorizam concluir superioridade, causalidade ou generalização.
+
+
+## Evidência do experimento multisseed (11/11/2026)
+
+**Run:** [CI #43117017363](https://github.com/DanieldeAlmeida2024/Projeto-IAGen-Ifood/actions/runs/43117017363) sobre o commit `23be1ffbd5fff77f5c93d10dcb42ef85b4967b79`. Passaram **5 testes de baseline + 7 SVD + 5 avaliação de seed única + 5 avaliação multisseed = 22 testes**. Artefato `offline-ranking-multi-seed/evaluation-robustness.json` com 100 usuários avaliados em cada seed e catálogo de 77 itens.
+
+| Métrica @5 (média de seeds 42–46) | Popularidade | SVD |
+|---|---:|---:|
+| Hit Rate@5 | **0,176 (17,6%)** | 0,134 (13,4%) |
+| Desvio-padrão amostral de Hit Rate | 0,021909 | 0,021909 |
+| Cobertura de catálogo@5 | 0,220779 (22,1%) | **0,376623 (37,7%)** |
+| Desvio-padrão de cobertura | 0,009183 | 0,031812 |
+
+**Diferença SVD − popularidade no Hit Rate@5:** média **−0,042 (−4,2 p.p.)**, mínimo −0,09, máximo 0,0, desvio-padrão 0,034205. Em **nenhuma das cinco seeds o SVD superou a popularidade em acerto**; houve empate em uma. Cobertura permaneceu maior para SVD. Os resultados são descritivos e dependentes: **não** significam teste de hipótese, intervalo de confiança ou qualidade real do produto. O histórico do PR #4 fica preservado.
