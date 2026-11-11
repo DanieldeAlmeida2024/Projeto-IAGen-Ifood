@@ -44,3 +44,6 @@ Definir objetivo mensurável (CTR, conversão, diversidade), conjuntos treino/va
 | CI | Job `baseline` só stdlib; job `svd` com numpy<2, pandas, scipy, scikit-surprise, joblib | Condição técnica de compatibilidade da ABI; sucesso de testes de implementação **não** prova qualidade de ranking |
 
 **Não confundir com IA generativa.** O SVD aprende fatores latentes dos pedidos simulados e tenta aproximar `order_count` como rating. Sem holdout temporal, ranking offline, baseline equivalente, disponibilidade de itens e dados com autorização, este modelo não tem evidência de precisão ou benefício real. Ver [UML específico](../uml/04_pipeline_svd.puml).
+
+
+**Resultado comprovado da proposta 1.1.0:** [CI #43110171433](https://github.com/DanieldeAlmeida2024/Projeto-IAGen-Ifood/actions/runs/43110171433) aprovou 5 testes do baseline e 7 do SVD com Python 3.11/Surprise 1.1.4. O SVD foi exercitado em dataset sintético, mas **nenhuma métrica comparativa de recomendação foi calculada**; a expressão "modelo validado" refere-se apenas à execução técnica dos contratos de software.
