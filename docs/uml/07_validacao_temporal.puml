@@ -1,0 +1,21 @@
+@startuml
+title Projeto-IAGen-Ifood — validação de divisão temporal global
+actor "Pesquisador / CI" as User
+database "CSV eventos com occurred_at timezone" as Data
+participant "load_temporal_rows" as Loader
+participant "validate_temporal_split" as Split
+collections "temporal-validation.json" as Json
+User -> Loader : CSV sintético / arquivo explícito
+Loader -> Data : quatro colunas obrigatórias
+Loader -> Loader : validar IDs/contagens e timezone
+Loader -> Split : eventos normalizados UTC
+User -> Split : cutoff UTC explícito
+Split -> Split : treino < cutoff; teste >= cutoff
+Split -> Split : checar usuários/itens vistos
+novos e consumidos anteriormente
+Split -> Json : contagens agregadas, sem identificadores
+note bottom
+Não há datas no CSV legado. Não adicionar timestamps fictícios.
+Isso valida o split; não calcula métricas de ranking temporal.
+end note
+@enduml

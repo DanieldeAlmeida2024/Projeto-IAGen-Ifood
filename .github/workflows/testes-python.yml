@@ -36,6 +36,7 @@ jobs:
           python -m unittest discover -s tests -p 'test_mf_model.py' -v
           python -m unittest discover -s tests -p 'test_evaluation.py' -v
           python -m unittest discover -s tests -p 'test_evaluation_multi_seed.py' -v
+          python -m unittest discover -s tests -p 'test_temporal_validation.py' -v
       - name: Avaliação offline reproduzível (sem afirmar melhoria)
         run: |
           python -m src.evaluation --k 5 --seed 42 | tee evaluation-summary.json
@@ -56,4 +57,15 @@ jobs:
         with:
           name: offline-ranking-multi-seed
           path: evaluation-robustness.json
+          retention-days: 14
+
+      - name: Validar cronologia e cold start com fixture sintética
+        run: |
+          python -m src.temporal_validation --arquivo tests/fixtures/temporal_interactions.csv --cutoff 2026-01-02T00:00:00Z | tee temporal-validation.json
+          python -m json.tool temporal-validation.json > /dev/null
+      - name: Publicar contagem temporal sem dados pessoais
+        uses: actions/upload-artifact@v4
+        with:
+          name: synthetic-temporal-validation
+          path: temporal-validation.json
           retention-days: 14

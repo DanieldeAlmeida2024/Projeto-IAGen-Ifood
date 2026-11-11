@@ -17,3 +17,5 @@ Não confundir pipeline SVD desenhado com treinamento validado. Atualizar ao cor
 
 
 - [Avaliação repetida em várias seeds com resumo descritivo](06_seeds_robustez.puml) — revisão 1.3.0 proposta.
+
+- [Corte cronológico global, elegibilidade e cold-start sem leakage](07_validacao_temporal.puml) — 1.4.0 proposta.
