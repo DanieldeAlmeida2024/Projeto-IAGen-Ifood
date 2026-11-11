@@ -47,3 +47,12 @@ Definir objetivo mensurável (CTR, conversão, diversidade), conjuntos treino/va
 
 
 **Resultado comprovado da proposta 1.1.0:** [CI #43110171433](https://github.com/DanieldeAlmeida2024/Projeto-IAGen-Ifood/actions/runs/43110171433) aprovou 5 testes do baseline e 7 do SVD com Python 3.11/Surprise 1.1.4. O SVD foi exercitado em dataset sintético, mas **nenhuma métrica comparativa de recomendação foi calculada**; a expressão "modelo validado" refere-se apenas à execução técnica dos contratos de software.
+
+
+## 1.2.0 proposta — comparação offline sem vazamento
+
+O novo módulo `src/evaluation.py` compara SVD e popularidade sobre **exatamente o mesmo treino** e mesmo conjunto de candidatos não consumidos, com `leave_one_out` por usuário elegível e seed 42. Ao retirar um item, preserva pelo menos uma interação do usuário no treinamento e ao menos uma ocorrência global do item, evitando casos impossíveis na avaliação de ranking. Nenhum dado real de cliente é processado.
+
+A métrica `hit_rate@5` identifica quantos usuários têm seu único item retido no Top 5. `catalog_coverage@5` é a fração dos itens de catálogo que aparece em ao menos uma lista de recomendação. Ambas são registradas para baseline e SVD; **não há meta de vitória artificial do SVD**, e o CI falha apenas se invariantes/contratos falharem. Este CSV não contém timestamps confiáveis: holdout aleatório reprodutível **não demonstra generalização temporal**, avaliação online ou ausência de outros vieses. Ponderação por número de pedidos e disponibilidade do produto também não é considerada.
+
+**Comando:** `python -m src.evaluation --k 5 --seed 42` gera JSON; CI preserva o resumo como artefato. Não há treinamento de IA generativa. [Rastreabilidade](../testes/PLANO_DE_TESTES.md) · [UML](../uml/05_avaliacao_offline.puml).

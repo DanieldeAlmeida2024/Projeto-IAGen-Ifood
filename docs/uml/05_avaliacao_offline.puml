@@ -1,0 +1,22 @@
+@startuml
+title Recomendação sintética — avaliação offline 1.2.0
+actor "GitHub Actions" as CI
+database "CSV simulado agregado" as Data
+participant "leave_one_out(seed=42)" as Split
+participant "Baseline popularidade" as Pop
+participant "MFModel / SVD" as SVD
+collections "evaluation-summary.json" as Result
+CI -> Data : DataLoader.load_raw_data()
+Data -> Split : interações positivas
+Split -> Split : 1 holdout por usuário elegível
+sem remover último item do catálogo
+Split --> Pop : treino + mesmos candidatos
+Split --> SVD : treino CSR + mesmos candidatos
+Pop -> Result : HitRate@K e cobertura
+SVD -> Result : HitRate@K e cobertura
+CI -> Result : salvar artefato + verificar JSON
+note bottom
+Holdout não é temporal. Dataset é sintético.
+Sem métrica de conversão ou resultado de produção.
+end note
+@enduml

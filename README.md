@@ -45,3 +45,12 @@ python -m unittest discover -s tests -p 'test_recomendacao.py' -v
 ```
 
 **Status:** implementação/validação do pipeline em andamento; nenhum resultado de ranking comparativo, integração com iFood ou produção. [Especificação](docs/projeto/ESPECIFICACAO.md) · [Testes versionados](docs/testes/PLANO_DE_TESTES.md).
+
+
+## Avaliação offline reproduzível (1.2.0 proposta)
+```bash
+python -m src.evaluation --k 5 --seed 42
+python -m unittest discover -s tests -p 'test_evaluation.py' -v
+```
+
+O resultado JSON compara **hit rate@5** e **cobertura de catálogo@5** contra o baseline, a partir de um holdout sem pares usuário-item duplicados entre treino/teste. Não existem timestamps na simulação: não é avaliação temporal, e as métricas não demonstram desempenho real. [Plano](docs/testes/PLANO_DE_TESTES.md) · [UML](docs/uml/05_avaliacao_offline.puml).

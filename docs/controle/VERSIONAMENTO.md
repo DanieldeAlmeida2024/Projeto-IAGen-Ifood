@@ -27,3 +27,13 @@
 - **Baseline sem dependências:** `Ran 5 tests ... OK` — **5/5** aprovados.
 - **SVD com SciPy/pandas/Surprise:** `Ran 7 tests ... OK` — **7/7** aprovados. O job compilou `scikit-surprise==1.1.4` no Python 3.11 com NumPy 1.26.4, sem acesso a serviços externos.
 - Os 12 testes confirmam loader/matriz, treinamento, score, cold start e persistência experimental; **não medem precision@K, recall@K nem superação do baseline**. Nenhum modelo de produção foi treinado, publicado ou usado com pedidos reais.
+
+
+## Registro de integração e novo experimento (11/11/2026)
+
+| Marco | Commit / PR | Execução | Resultado |
+|---|---|---|---|
+| Versão 1.1.0 integrada na `main` | PR #3 · squash `ca2dae06ee0de076cc47c6b412f065f846c6049b` | [CI main #43112834496](https://github.com/DanieldeAlmeida2024/Projeto-IAGen-Ifood/actions/runs/43112834496) | Baseline e SVD aprovados; sem deploy |
+| 1.2.0 **proposta** | `feat/offline-ranking-evaluation-20261111` | Job CI inclui novos testes offline e artefato JSON | Avaliação e métricas aguardando CI |
+
+**Novos contratos para 1.2.0:** holdout leave-one-out por usuário com seed fixa; nenhum par usuário-item repetido entre treino e teste; cada item retido aparece no catálogo de treino; popularidade e SVD recebem os mesmos candidatos filtrados; avaliação de `hit_rate@K` e `catalog_coverage@K`. Isso é **uma comparação em CSV sintético**, não performance real.
