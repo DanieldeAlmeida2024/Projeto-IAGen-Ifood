@@ -98,3 +98,17 @@ Documentar versão de dependências, tamanho do conjunto, seed, commit, duraçã
 | Dados degenerados | Seeds duplicadas, não numéricas, sem 2 replicações | `ValueError`, não produzir relato incorreto |
 
 Essas verificações **não** substituem REC-16 (governança dos dados) ou teste em pedidos reais/partição temporal. Não publicar a hipótese de ganho antes de ler o relatório.
+
+
+## Evidência do experimento multisseed (11/11/2026)
+
+**Run:** [CI #43117017363](https://github.com/DanieldeAlmeida2024/Projeto-IAGen-Ifood/actions/runs/43117017363) sobre o commit `23be1ffbd5fff77f5c93d10dcb42ef85b4967b79`. Passaram **5 testes de baseline + 7 SVD + 5 avaliação de seed única + 5 avaliação multisseed = 22 testes**. Artefato `offline-ranking-multi-seed/evaluation-robustness.json` com 100 usuários avaliados em cada seed e catálogo de 77 itens.
+
+| Métrica @5 (média de seeds 42–46) | Popularidade | SVD |
+|---|---:|---:|
+| Hit Rate@5 | **0,176 (17,6%)** | 0,134 (13,4%) |
+| Desvio-padrão amostral de Hit Rate | 0,021909 | 0,021909 |
+| Cobertura de catálogo@5 | 0,220779 (22,1%) | **0,376623 (37,7%)** |
+| Desvio-padrão de cobertura | 0,009183 | 0,031812 |
+
+**Diferença SVD − popularidade no Hit Rate@5:** média **−0,042 (−4,2 p.p.)**, mínimo −0,09, máximo 0,0, desvio-padrão 0,034205. Em **nenhuma das cinco seeds o SVD superou a popularidade em acerto**; houve empate em uma. Cobertura permaneceu maior para SVD. Os resultados são descritivos e dependentes: **não** significam teste de hipótese, intervalo de confiança ou qualidade real do produto. O histórico do PR #4 fica preservado.
