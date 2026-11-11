@@ -1,11 +1,20 @@
 @startuml
-actor Operador
-component "CLI de recomendacao" as CLI
-component "Leitor CSV" as Leitor
-component "Regras de ranking" as Ranking
-database "Dados simulados" as CSV
-Operador --> CLI
-CLI --> Leitor
-Leitor --> CSV
-CLI --> Ranking
+actor "Analista" as A
+file "CSV user_id,item_id,order_count" as CSV
+component "carregar_interacoes" as Load
+component "recomendar()" as Pop
+component "MFModel SVD" as MF
+database "Matriz CSR" as CSR
+component "DataLoader (protótipo)" as Loader
+A --> CSV
+CSV --> Load
+Load --> Pop : tuplas validadas
+Pop --> A : itens populares não consumidos
+CSV --> Loader
+Loader --> CSR
+CSR --> MF : ainda não validado
+note right of MF
+Imports incompatíveis e pd não definido.
+Sem testes de treino na suíte atual.
+end note
 @enduml

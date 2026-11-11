@@ -1,0 +1,14 @@
+@startuml
+actor Operador
+participant "carregar_interacoes" as L
+participant "recomendar" as R
+collections "interacoes (usuario,item,quantidade)" as I
+Operador -> L : caminho CSV
+L -> L : validar colunas / inteiros / limites
+L --> Operador : interacoes
+Operador -> R : interacoes, usuario, limite
+R -> I : filtrar itens já consumidos pelo usuario
+R -> I : somar popularidade global
+R -> R : ordenar (-pontuacao, item_id)
+R --> Operador : [{item_id,pontuacao}]
+@enduml

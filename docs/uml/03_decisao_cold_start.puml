@@ -1,0 +1,14 @@
+@startuml
+start
+:Receber usuario inteiro >0 e limite entre 1..100;
+:Carregar interacoes validadas;
+if (Usuário possui histórico positivo?) then (sim)
+  :Excluir itens consumidos da recomendação;
+else (não)
+  :Não excluir itens por histórico;
+endif
+:Somar quantidades positivas por item;
+:Ordenar pontuação desc; item_id asc;
+:Limitar resultado ao K solicitado;
+stop
+@enduml
