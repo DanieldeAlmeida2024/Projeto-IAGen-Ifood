@@ -54,3 +54,7 @@ python -m unittest discover -s tests -p 'test_evaluation.py' -v
 ```
 
 O resultado JSON compara **hit rate@5** e **cobertura de catálogo@5** contra o baseline, a partir de um holdout sem pares usuário-item duplicados entre treino/teste. Não existem timestamps na simulação: não é avaliação temporal, e as métricas não demonstram desempenho real. [Plano](docs/testes/PLANO_DE_TESTES.md) · [UML](docs/uml/05_avaliacao_offline.puml).
+
+### Resultado atual da comparação (dataset sintético)
+
+[CI #43113533934](https://github.com/DanieldeAlmeida2024/Projeto-IAGen-Ifood/actions/runs/43113533934) aprovou **17 testes** e produziu métricas com seed 42: **Hit Rate@5 de 15% para popularidade e 12% para SVD**, com cobertura de **22,1%** e **41,6%**, respectivamente. O SVD apresentou maior variedade, **não maior taxa de acerto**. Esses números não são resultados reais de pedidos nem provam significância estatística.

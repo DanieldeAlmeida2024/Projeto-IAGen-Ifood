@@ -71,3 +71,17 @@ Documentar versão de dependências, tamanho do conjunto, seed, commit, duraçã
 | REC-20 | Dados degenerados, duplicados ou K inválido | `ValueError` no split/evaluator |
 
 **Atenção:** métricas que aparecerem no CI são exclusivamente de teste sobre dados simulados. Deixar resultados em branco neste documento até execução, anotando SHA, data e JSON exato. REC-16 — privacidade de dados reais — permanece aberto.
+
+## Evidência de avaliação offline — 11/11/2026
+
+**Fonte reproduzível:** [GitHub Actions #43113533934](https://github.com/DanieldeAlmeida2024/Projeto-IAGen-Ifood/actions/runs/43113533934), commit `8c42c0e78948dfa37594bea499d773debd11a52d`, artefato `offline-ranking-evaluation/evaluation-summary.json`. O CI registrou **5 testes de baseline, 7 testes SVD e 5 testes da avaliação — 17 testes aprovados**.
+
+| Medida | Popularidade | SVD | Leitura |
+|---|---:|---:|---|
+| Hit Rate@5 | **0.15 (15%)** | 0.12 (12%) | Popularidade teve maior taxa de acerto no conjunto sintético; diferença de 3 p.p., sem inferência estatística |
+| Cobertura de catálogo@5 | 0.220779 (22,1%) | **0.415584 (41,6%)** | SVD recomendou maior proporção de itens distintos |
+| Usuários / holdouts | 100 | 100 | Mesmo conjunto de avaliação, um par por usuário |
+| Itens no catálogo treinado | 77 | 77 | Mesmos candidatos por usuário |
+| Interações de treino | 1689 | 1689 | Mesmo treino, com seed 42 |
+
+**Decisão técnica:** não adotar o SVD como substituto da popularidade somente por esta avaliação. Os dados são inteiramente simulados, sem tempo de pedidos e sem teste online; esses resultados não demonstram conversão, precisão em ambiente real nem diferenças estatisticamente significativas. Os próximos experimentos devem comparar métricas em mais seeds, intervalos de confiança e, caso haja dados adequados e autorizados, partição temporal.
