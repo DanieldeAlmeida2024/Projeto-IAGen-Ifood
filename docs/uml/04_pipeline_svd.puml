@@ -1,0 +1,33 @@
+@startuml
+title Projeto IAGen Ifood — pipeline SVD experimental (v1.1.0 proposta)
+actor "Pesquisador" as User
+participant "DataLoader" as Loader
+database "CSV sintético de pedidos" as CSV
+participant "Matriz CSR" as CSR
+participant "MFModel" as SVD
+collections "Artefato joblib confiável" as Joblib
+User -> Loader : get_interaction_matrix()
+Loader -> CSV : read_csv dtype=str
+CSV --> Loader : linhas + cabeçalhos repetidos
+Loader -> Loader : remover cabeçalhos exatos; validar IDs/contagens
+Loader -> Loader : groupby usuario/item; somar duplicatas
+Loader -> CSR : pivot_table; csr_matrix
+Loader --> User : matriz + user_ids + item_ids
+User -> SVD : train(matrix, user_ids, item_ids)
+SVD -> CSR : tocoo() (sem densificar)
+SVD -> SVD : converter ids externos em strings,
+Surprise Reader/Dataset/SVD.fit
+User -> SVD : predict_score(user_id, item_id)
+alt usuário/item desconhecido
+ SVD --> User : média global explícita
+else conhecido
+ SVD --> User : score estimado (SVD)
+end
+User -> SVD : save_model(path)
+SVD -> Joblib : modelo + ids + seed + média
+note bottom
+Treino com dados simulados e contagens como ratings.
+Nenhuma evidência de melhoria sobre popularidade.
+Modelo joblib só pode ser carregado de fontes confiáveis.
+end note
+@enduml

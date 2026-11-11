@@ -1,9 +1,11 @@
-pandas>=2.0.0 
-numpy>=1.24.0 
-scipy>=1.10.0
-scikit-learn>=1.3.0
-scikit-surprise>=1.1.3
-fastapi>=0.104.0 
-uvicorn[standard]>=0.23.0
-pydantic>=2.0.0
-joblib>=1.3.0
+# Dependências para o pipeline experimental SVD (Python 3.11).
+# NumPy <2 evita ABI mismatch em builds binários do scikit-surprise.
+pandas>=2.0,<3
+numpy>=1.24,<2
+scipy>=1.10,<2
+scikit-learn>=1.3
+scikit-surprise==1.1.4
+fastapi>=0.104
+uvicorn[standard]>=0.23
+pydantic>=2.0
+joblib>=1.3
