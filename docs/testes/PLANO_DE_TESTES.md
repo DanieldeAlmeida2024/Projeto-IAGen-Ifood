@@ -112,3 +112,16 @@ Essas verificações **não** substituem REC-16 (governança dos dados) ou teste
 | Desvio-padrão de cobertura | 0,009183 | 0,031812 |
 
 **Diferença SVD − popularidade no Hit Rate@5:** média **−0,042 (−4,2 p.p.)**, mínimo −0,09, máximo 0,0, desvio-padrão 0,034205. Em **nenhuma das cinco seeds o SVD superou a popularidade em acerto**; houve empate em uma. Cobertura permaneceu maior para SVD. Os resultados são descritivos e dependentes: **não** significam teste de hipótese, intervalo de confiança ou qualidade real do produto. O histórico do PR #4 fica preservado.
+
+
+## 1.4.0 proposta — contrato para validação temporal estrita
+
+A versão documental 1.3.0 foi integrada em [PR #5](https://github.com/DanieldeAlmeida2024/Projeto-IAGen-Ifood/pull/5) pelo squash `88331ebfdc0405f4ab98ff44538ddabb56628a13`. O experimento de cinco seeds (42–46) mostrou HitRate@5 médio **17,6% popularidade vs 13,4% SVD** usando o mesmo CSV sintético, mas os dados **não têm data de pedido**.
+
+Nova branch: `feat/temporal-data-validation-20261111`, que **não inventa timestamps** no CSV legado. Adiciona contrato separado de CSV com `user_id,item_id,order_count,occurred_at` e timestamps ISO 8601 com timezone explícito; o corte de treino/avaliação é **global** (treino estritamente anterior ao cutoff, teste a partir dele). A validação indica quantas linhas de teste são elegíveis ao ranking, quantas são cold-start de usuário, item ou repetição já consumida, sem treinar modelos com o futuro.
+
+**Dados:** apenas fixture artificial `tests/fixtures/temporal_interactions.csv`. Não existe integração com iFood real. Não declara HitRate temporal ou benefício em negócio.
+
+**Gates:** `tests/test_temporal_validation.py` e CLI `python -m src.temporal_validation --arquivo ... --cutoff ...` no CI com relatório `synthetic-temporal-validation`; execução real pendente no primeiro commit. O próximo passo será avaliação de ranking pós-cutoff apenas sobre dados cronológicos autorizados. Retenção, pseudonimização e LGPD devem ser definidos antes de importar qualquer registro pessoal.
+
+**REC-22**: rejeitar data sem timezone, arquivo legado sem `occurred_at`, IDs/contagens inválidos e split vazio; provar fronteira temporal e classificação de cold-start. Não marcar como testado antes do CI.

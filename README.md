@@ -80,3 +80,6 @@ Os resultados incluem a diferença `SVD - popularidade`, média, std, mínimo e 
 | Desvio-padrão de cobertura | 0,009183 | 0,031812 |
 
 **Diferença SVD − popularidade no Hit Rate@5:** média **−0,042 (−4,2 p.p.)**, mínimo −0,09, máximo 0,0, desvio-padrão 0,034205. Em **nenhuma das cinco seeds o SVD superou a popularidade em acerto**; houve empate em uma. Cobertura permaneceu maior para SVD. Os resultados são descritivos e dependentes: **não** significam teste de hipótese, intervalo de confiança ou qualidade real do produto. O histórico do PR #4 fica preservado.
+
+### Contrato temporal (1.4.0 proposta)
+O arquivo de simulação original não possui data/hora; o contrato novo exige `occurred_at` em ISO 8601 com fuso. A CLI valida cortes cronológicos **sem treinar SVD** ou afirmar métricas reais: `python -m src.temporal_validation --arquivo tests/fixtures/temporal_interactions.csv --cutoff 2026-01-02T00:00:00Z`. Veja [plano](docs/testes/PLANO_DE_TESTES.md).
