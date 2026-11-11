@@ -1,6 +1,6 @@
 # Plano de testes — recomendações iFood
 
-> **REC-DOC v1.0.0** · 11/11/2026 · referência `2ea2ca89830b115f77b6af6ab0b5e70a88781e4e`. Código analisado estaticamente; evitar afirmar treinamento de ML que não foi executado.
+> **REC-DOC v1.1.0 proposta** · 11/11/2026 · referência `2ea2ca89830b115f77b6af6ab0b5e70a88781e4e`. Código analisado estaticamente; evitar afirmar treinamento de ML que não foi executado.
 
 ## Casos já representados em código
 | ID | Origem | Resultado esperado |
@@ -36,3 +36,18 @@ Registrar precisão@K, recall@K, cobertura, diversidade e baseline, com sementes
 python -m unittest discover -s tests -p "test_*.py" -v
 ```
 Documentar versão de dependências, tamanho do conjunto, seed, commit, duração e métricas. Os casos REC-10–16 são **pendentes**; publicar relatórios somente após execução real.
+
+
+## Revisão 1.1.0 — casos automatizados adicionais do SVD
+
+| ID | Teste automático | Esperado | Estado inicial |
+|---|---|---|---|
+| REC-10 | Importar `DataLoader` e `MFModel` | Sem erro de import e interfaces corretas | Implementado; CI pendente |
+| REC-11 | Cabeçalho duplicado + tuplas duplicadas e matrix CSR | Soma `(1,101)` = 7, IDs [1,2] × [101,102,103] | Implementado; CI pendente |
+| REC-12 | Treinar SVD em CSR e salvar/carregar via joblib | Score reproduzível após load; modelo com `random_state=42` | Implementado; CI pendente |
+| REC-13 | Cold start e modelo sem treino | Desconhecido → média global; não treinado → `RuntimeError` | Implementado; CI pendente |
+| REC-17 | CSV com contagem negativa, texto ou decimal | `ValueError`, não criar matriz silenciosamente | Implementado; CI pendente |
+| REC-18 | Matriz vazia ou dimensões divergentes | Falha explícita antes de treinar | Implementado; CI pendente |
+| REC-19 | CSV de simulação `src/data/ifood_sim_data.csv` | Loader ignora só cabeçalhos repetidos conhecidos e carrega mais de 100 interações positivas | Implementado; CI pendente |
+
+**Isolamento de CI:** `test_recomendacao.py` permanece baseline sem terceiros; `test_mf_model.py` usa pandas/SciPy/Surprise. Não atribuir execução positiva aos novos casos sem verificar GitHub Actions. Os cinco testes baseline não são cobertura dos componentes SVD. **Validação de qualidade em aberto:** REC-14–16 exigem divisão sem vazamento e comparação com popularidade (por exemplo Recall@5 e cobertura). Arquivos `joblib` devem ser carregados só de fonte confiável.
