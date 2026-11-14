@@ -7,6 +7,12 @@ from src.evaluation import evaluate_ranking, leave_one_out
 
 
 class OfflineEvaluationTests(unittest.TestCase):
+
+    def test_booleano_nao_e_k_valido(self):
+        for k in (True, False):
+            with self.subTest(k=k), self.assertRaises(ValueError):
+                evaluate_ranking(self.frame, k=k)
+
     def setUp(self):
         self.frame = pd.DataFrame([
             {"user_id": uid, "item_id": item, "order_count": score}

@@ -72,7 +72,7 @@ def leave_one_out(frame: pd.DataFrame, seed: int = 42) -> tuple[pd.DataFrame, pd
 
 
 def evaluate_ranking(frame: pd.DataFrame, k: int = 5, seed: int = 42) -> EvaluationResult:
-    if not isinstance(k, int) or not 1 <= k <= 100:
+    if type(k) is not int or not 1 <= k <= 100:
         raise ValueError("k deve ser um inteiro de 1 a 100")
     train, test = leave_one_out(frame, seed=seed)
     pivot = train.pivot_table(

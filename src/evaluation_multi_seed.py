@@ -34,7 +34,7 @@ def parse_seeds(text: str) -> tuple[int, ...]:
 
 def compare_seeds(frame: pd.DataFrame, *, seeds: tuple[int, ...], k: int = 5) -> dict:
     if len(seeds) < 2 or len(set(seeds)) != len(seeds) or any(
-        not isinstance(s, int) or s < 0 for s in seeds
+        type(s) is not int or s < 0 for s in seeds
     ):
         raise ValueError("Seeds devem ser pelo menos duas inteiras únicas e positivas ou zero")
 

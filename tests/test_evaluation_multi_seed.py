@@ -7,6 +7,12 @@ from src.evaluation_multi_seed import compare_seeds, parse_seeds
 
 
 class MultiSeedRankingTests(unittest.TestCase):
+
+    def test_booleano_nao_e_seed_valida(self):
+        for seeds in ((True, 42), (False, 42), (True, False)):
+            with self.subTest(seeds=seeds), self.assertRaises(ValueError):
+                compare_seeds(self.frame, seeds=seeds, k=2)
+
     def setUp(self):
         self.frame = pd.DataFrame([
             {"user_id": u, "item_id": i, "order_count": (u + i) % 5 + 1}

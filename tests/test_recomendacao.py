@@ -9,6 +9,14 @@ class TestesRecomendacao(unittest.TestCase):
         self.arquivo = Path(self.tmp.name) / 'pedidos.csv'
         self.arquivo.write_text('user_id,item_id,order_count\n1,10,5\n1,11,2\n2,12,8\n3,13,7\n', encoding='utf-8')
     def tearDown(self): self.tmp.cleanup()
+
+    def test_booleanos_nao_sao_ids_ou_limites(self):
+        dados = carregar_interacoes(self.arquivo)
+        for usuario, limite in [(True, 5), (False, 5), (1, True), (1, False)]:
+            with self.subTest(usuario=usuario, limite=limite):
+                with self.assertRaises(ValueError):
+                    recomendar(dados, usuario, limite)
+
     def test_carregamento(self):
         self.assertEqual(4, len(carregar_interacoes(self.arquivo)))
     def test_exclui_itens_ja_consumidos(self):
