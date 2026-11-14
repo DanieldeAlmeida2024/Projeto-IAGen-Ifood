@@ -27,9 +27,9 @@ def carregar_interacoes(caminho):
     return resultado
 
 def recomendar(interacoes, usuario, limite=5):
-    if not isinstance(usuario, int) or usuario <= 0:
+    if type(usuario) is not int or usuario <= 0:
         raise ValueError('Informe usuário inteiro positivo')
-    if not isinstance(limite, int) or not 1 <= limite <= 100:
+    if type(limite) is not int or not 1 <= limite <= 100:
         raise ValueError('Limite deve estar entre 1 e 100')
     consumidos = {item for dono, item, quantidade in interacoes if dono == usuario and quantidade > 0}
     pontuacao = Counter()
