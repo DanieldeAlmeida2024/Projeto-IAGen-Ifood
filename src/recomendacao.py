@@ -13,6 +13,8 @@ def carregar_interacoes(caminho):
             raise ValueError('CSV sem colunas user_id, item_id e order_count')
         resultado = []
         for numero, linha in enumerate(leitor, start=2):
+            if all((linha.get(coluna) or '').strip() == coluna for coluna in COLUNAS):
+                continue  # cabeçalho repetido em bases CSV exportadas/concatenadas
             try:
                 usuario = int(linha['user_id'])
                 item = int(linha['item_id'])
