@@ -138,3 +138,16 @@ O SHA do commit documental posterior deve voltar a passar no CI antes do merge.
 ### Errata de contagem — 11/11/2026
 
 A referência inicial a 23 testes no [CI #43119222792](https://github.com/DanieldeAlmeida2024/Projeto-IAGen-Ifood/actions/runs/43119222792) era um **erro aritmético de documentação**. O total correto é **28 testes**: 5 baseline + 7 SVD + 5 avaliação seed única + 5 multisseed + 6 temporais. Todos os cinco grupos tiveram execução `OK` no log. Não houve mudança nas regras do modelo, dados de teste nem resultados; a errata não implica execução de novos testes. O CI na main do merge #6 também foi concluído com sucesso no [run #43120014628](https://github.com/DanieldeAlmeida2024/Projeto-IAGen-Ifood/actions/runs/43120014628).
+
+## REC-25 — contratos numéricos estritos na API Python (14/11/2026)
+
+| Entrada | Resultado |
+| --- | --- |
+| `recomendar(usuario=True)` ou `usuario=False` | `ValueError` |
+| `recomendar(limite=True)` ou `limite=False` | `ValueError` |
+| `evaluate_ranking(k=True/False)` | `ValueError` |
+| `compare_seeds(seeds=(True, 42))` | `ValueError` |
+
+Python considera `bool` subclasse de `int`. O contrato exige **inteiros reais**, para não interpretar indicadores lógicos como identificadores, tamanhos de ranking ou sementes experimentais. As alterações não modificam dados sintéticos, algoritmos ou métricas anteriores.
+
+As regressões estão em `tests/test_recomendacao.py`, `tests/test_evaluation.py` e `tests/test_evaluation_multi_seed.py`.
