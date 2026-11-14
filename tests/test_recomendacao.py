@@ -22,3 +22,10 @@ class TestesRecomendacao(unittest.TestCase):
     def test_csv_incorreto(self):
         self.arquivo.write_text('nome,valor\nA,1\n', encoding='utf-8')
         with self.assertRaises(ValueError): carregar_interacoes(self.arquivo)
+
+    def test_csv_com_cabecalhos_repetidos(self):
+        self.arquivo.write_text(
+            'user_id,item_id,order_count\n1,10,2\n'
+            'user_id,item_id,order_count\n2,20,3\n', encoding='utf-8'
+        )
+        self.assertEqual([(1, 10, 2), (2, 20, 3)], carregar_interacoes(self.arquivo))
