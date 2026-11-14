@@ -14,6 +14,14 @@ python -m unittest discover -s tests -v
 
 O CSV original é `src/data/ifood_sim_data.csv`. Para outro arquivo, use `--arquivo caminho.csv`. Resultados são educativos; **não representam um modelo treinado em pedidos reais, nem integração com o iFood**.
 
+## Avaliação offline do baseline
+
+```bash
+python principal.py --avaliar --quantidade 5
+```
+
+O relatório mostra `usuarios_avaliados`, `acertos` e **HitRate@5**. Para cada usuário com pelo menos dois itens distintos, um item é separado (maior ID, critério determinístico) e excluído das interações daquele usuário antes de gerar recomendações. O resultado é um indicador didático em dados simulados, **não** uma estimativa de desempenho em produção ou um comparativo com SVD. O workflow `baseline.yml` valida apenas o algoritmo de popularidade, sem instalar pacotes científicos.
+
 ## Arquitetura
 - `principal.py`: CLI.
 - `src/recomendacao.py`: leitura e classificação determinística.
