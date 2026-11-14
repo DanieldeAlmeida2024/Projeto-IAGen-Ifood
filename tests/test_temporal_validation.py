@@ -56,6 +56,20 @@ class TemporalValidationTests(unittest.TestCase):
                     with self.assertRaises(ValueError):
                         load_temporal_rows(path)
 
+    def test_positive_integer_above_int64_is_rejected(self):
+        for column in ("user_id", "item_id", "order_count"):
+            with self.subTest(column=column), tempfile.TemporaryDirectory() as folder:
+                values = {"user_id": "1", "item_id": "101", "order_count": "1"}
+                values[column] = "9223372036854775808"
+                path = Path(folder) / "overflow.csv"
+                path.write_text(
+                    "user_id,item_id,order_count,occurred_at\n"
+                    + f"{values['user_id']},{values['item_id']},{values['order_count']},2026-01-01T00:00:00Z\n",
+                    encoding="utf-8",
+                )
+                with self.assertRaisesRegex(ValueError, "int64"):
+                    load_temporal_rows(path)
+
     def test_empty_side_of_cutoff_is_error(self):
         with self.assertRaises(ValueError):
             validate_temporal_split(load_temporal_rows(FIXTURE), "2027-01-01T00:00:00Z")

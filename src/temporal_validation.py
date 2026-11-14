@@ -58,6 +58,9 @@ def load_temporal_rows(path: Path) -> pd.DataFrame:
     for name, pattern in (("user_id", ID), ("item_id", ID), ("order_count", COUNT)):
         if not frame[name].map(lambda x: isinstance(x, str) and bool(pattern.fullmatch(x))).all():
             raise ValueError(f"{name} inválido: inteiro positivo obrigatório")
+        # IDs e contagens devem caber em int64 antes da conversão pandas.
+        if any(int(value) > 2**63 - 1 for value in frame[name]):
+            raise ValueError(f"{name} excede limite de inteiro int64")
         frame[name] = frame[name].astype("int64")
     frame["timestamp_utc"] = frame["occurred_at"].map(parse_instant)
     return frame
