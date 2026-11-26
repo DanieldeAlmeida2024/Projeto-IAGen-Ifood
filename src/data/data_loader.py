@@ -1,4 +1,5 @@
 """Carregador de interações sintéticas para treino SVD e avaliação offline."""
+from decimal import Decimal, InvalidOperation
 from pathlib import Path
 
 import pandas as pd
@@ -9,6 +10,21 @@ from .interfaces import IDataLoader
 
 DEFAULT_DATA = Path(__file__).resolve().parent / "ifood_sim_data.csv"
 COLUMNS = ("user_id", "item_id", "order_count")
+MAX_INT64 = (1 << 63) - 1
+
+
+def _parse_int64(value: str, field: str, minimum: int) -> int:
+    try:
+        number = Decimal(value)
+    except (InvalidOperation, TypeError) as error:
+        raise ValueError(f"{field} contém valor inválido") from error
+    if not number.is_finite() or number != number.to_integral_value():
+        raise ValueError(f"{field} precisa ser inteiro não nulo")
+    if number < minimum:
+        raise ValueError(f"{field} deve ser maior ou igual a {minimum}")
+    if number > MAX_INT64:
+        raise ValueError(f"{field} excede limite de inteiro int64")
+    return int(number)
 
 
 class DataLoader(IDataLoader):
@@ -37,22 +53,18 @@ class DataLoader(IDataLoader):
         frame = frame.loc[~repeated].copy()
         if frame.empty:
             raise ValueError("CSV sem interações para treino")
-        for field in COLUMNS:
-            try:
-                numeric = pd.to_numeric(frame[field], errors="raise")
-            except (ValueError, TypeError) as error:
-                raise ValueError(f"{field} contém valor inválido") from error
-            if numeric.isna().any() or (numeric % 1 != 0).any():
-                raise ValueError(f"{field} precisa ser inteiro não nulo")
-            frame[field] = numeric.astype("int64")
-        if (frame["user_id"] <= 0).any() or (frame["item_id"] <= 0).any():
-            raise ValueError("IDs devem ser inteiros positivos")
-        if (frame["order_count"] < 0).any():
-            raise ValueError("Contagem não pode ser negativa")
-        self._raw_df = (
-            frame.groupby(["user_id", "item_id"], as_index=False, sort=True)["order_count"]
-            .sum()
-        )
+        totals: dict[tuple[int, int], int] = {}
+        for raw_user, raw_item, raw_count in frame.itertuples(index=False, name=None):
+            user = _parse_int64(raw_user, "user_id", minimum=1)
+            item = _parse_int64(raw_item, "item_id", minimum=1)
+            count = _parse_int64(raw_count, "order_count", minimum=0)
+            key = (user, item)
+            total = totals.get(key, 0) + count
+            if total > MAX_INT64:
+                raise ValueError(f"Contagem agregada excede int64 para usuário {user}, item {item}")
+            totals[key] = total
+        rows = [(user, item, total) for (user, item), total in sorted(totals.items())]
+        self._raw_df = pd.DataFrame(rows, columns=COLUMNS, dtype="int64")
         self._interaction_matrix = None
         self.user_ids = []
         self.item_ids = []

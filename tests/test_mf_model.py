@@ -7,7 +7,6 @@ import numpy as np
 from scipy.sparse import csr_matrix
 
 from src.data.data_loader import DataLoader
-from src.model.mf_model import MFModel
 
 
 class DataLoaderAndSVDTests(unittest.TestCase):
@@ -49,7 +48,36 @@ class DataLoaderAndSVDTests(unittest.TestCase):
                 with self.assertRaises(ValueError):
                     self.loader.load_raw_data(self.path)
 
+    def test_loader_preserva_inteiros_no_limite_sem_arredondar_ids(self):
+        self.path.write_text(
+            "user_id,item_id,order_count\n"
+            "9223372036854775807,101,9223372036854775806\n"
+            "9223372036854775807,101,1\n"
+            "9007199254740993,102,1.0\n"
+            "9007199254740992,102,1e0\n", encoding="utf-8",
+        )
+        rows = self.loader.load_raw_data(self.path)
+        self.assertEqual(
+            [(9007199254740992, 102, 1), (9007199254740993, 102, 1),
+             (9223372036854775807, 101, 9223372036854775807)],
+            list(rows.itertuples(index=False, name=None)),
+        )
+
+    def test_loader_rejeita_valor_ou_soma_acima_de_int64(self):
+        for conteudo in (
+            "9223372036854775808,101,1\n",
+            "1,9223372036854775808,1\n",
+            "1,101,9223372036854775808\n",
+            "1,101,9223372036854775807\n1,101,1\n",
+        ):
+            with self.subTest(conteudo=conteudo):
+                self.path.write_text("user_id,item_id,order_count\n" + conteudo, encoding="utf-8")
+                with self.assertRaisesRegex(ValueError, "int64"):
+                    self.loader.load_raw_data(self.path)
+
     def test_train_predict_and_cold_start(self):
+        from src.model.mf_model import MFModel
+
         matrix = self.loader.get_interaction_matrix()
         model = MFModel()
         with self.assertRaises(RuntimeError):
@@ -61,6 +89,8 @@ class DataLoaderAndSVDTests(unittest.TestCase):
         self.assertAlmostEqual(model.global_mean, model.predict_score(1, 999))
 
     def test_save_load_and_reproducible_score(self):
+        from src.model.mf_model import MFModel
+
         model = MFModel()
         model.train(self.loader.get_interaction_matrix(),
                     user_ids=self.loader.user_ids, item_ids=self.loader.item_ids)
@@ -71,6 +101,8 @@ class DataLoaderAndSVDTests(unittest.TestCase):
         self.assertAlmostEqual(before, after.predict_score(1, 101), places=8)
 
     def test_shape_and_empty_training_errors(self):
+        from src.model.mf_model import MFModel
+
         model = MFModel()
         with self.assertRaises(ValueError):
             model.train(csr_matrix((2, 2)), user_ids=[1], item_ids=[101, 102])

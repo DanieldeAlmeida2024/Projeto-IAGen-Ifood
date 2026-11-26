@@ -108,3 +108,7 @@ A referência inicial a 23 testes no [CI #43119222792](https://github.com/Daniel
 - `principal.py` e as interfaces de execução permanecem compatíveis para inteiros válidos.
 
 Esta alteração é de validação e não representa melhoria estatística do modelo nem integração com serviços reais.
+
+## 1.4.2 documental — integridade de inteiros no carregador SVD (26/11/2026)
+
+O caso REC-26 verifica que IDs distintos não se confundem por arredondamento e que o agrupamento recusa somas fora de `int64`. A comparação local no commit `6a34de705cec60ba898e8b62997c2ecdb2c50762` manteve os 1.789 pares do CSV sintético idênticos. A mediana de sete cargas foi 11,88 ms antes e 15,65 ms após a alteração, em Python 3.11.9 e pandas 2.3.3 no mesmo ambiente. A medição cobre somente a carga do CSV, sem treino.
