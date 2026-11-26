@@ -151,3 +151,6 @@ A referência inicial a 23 testes no [CI #43119222792](https://github.com/Daniel
 Python considera `bool` subclasse de `int`. O contrato exige **inteiros reais**, para não interpretar indicadores lógicos como identificadores, tamanhos de ranking ou sementes experimentais. As alterações não modificam dados sintéticos, algoritmos ou métricas anteriores.
 
 As regressões estão em `tests/test_recomendacao.py`, `tests/test_evaluation.py` e `tests/test_evaluation_multi_seed.py`.
+### REC-26 — limites do carregador SVD
+
+Os testes em `tests/test_mf_model.py` exercitam IDs adjacentes acima de 2⁵³, a soma exata até o maior `int64` e a rejeição de IDs, contagens ou somas fora da faixa. A soma de valores válidos do mesmo par usuário/item também deve ser rejeitada se exceder o limite.
